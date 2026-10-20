@@ -1,0 +1,10 @@
+__pycache__/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+legacy/
+paper/
+*.csv
+*.sqlite
+*.json.gz

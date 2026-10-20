@@ -1,0 +1,34 @@
+[project]
+name = "msv"
+version = "0.1.0"
+description = "Correlated random-level (CRL) volatility model and the MSV model of Date & Islyaev (2015)"
+requires-python = ">=3.14"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.170.2",
+    "matplotlib>=3.11.2",
+    "mypy",
+    "openpyxl>=3.1.5",
+    "pytest",
+    "ruff",
+    "scipy-stubs",
+    "sympy>=1.14.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+
+[tool.mypy]
+strict = true
