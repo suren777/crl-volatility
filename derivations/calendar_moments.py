@@ -129,7 +129,8 @@ def phi_p(t: float, s: float, rho: float, p: float) -> Callable[[float | FloatAr
 
     def f(x: float | FloatArray) -> FloatArray:
         zeta = np.exp(s * x - 0.5 * s * s)
-        c = p * p * (1.0 - rho**2) - p
+        # p^2 (1 - rho^2) - p, written without the 1 - rho^2 cancellation at small rho
+        c = p * (p - 1.0) - p * p * rho**2
         return p * rho * np.sqrt(t * zeta) * x + 0.5 * t * zeta * c
 
     return f
