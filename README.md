@@ -36,6 +36,12 @@ No market data is distributed here. The S&P 500 experiments read a SQLite databa
 data, which is licensed and not included; their recorded results are in `replication/results/`.
 Use of market data is subject to the provider's terms.
 
+## Citation
+
+Archived on Zenodo: [doi:10.5281/zenodo.23600840](https://doi.org/10.5281/zenodo.23600840)
+(all versions; v1.0.0 is [10.5281/zenodo.23600841](https://doi.org/10.5281/zenodo.23600841)).
+See `CITATION.cff` for the citation entry.
+
 ## Licence
 
 MIT; see `LICENSE`.

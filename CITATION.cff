@@ -9,6 +9,7 @@ authors:
 license: MIT
 repository-code: "https://github.com/suren777/crl-volatility"
 version: 1.0.0
+doi: 10.5281/zenodo.23600840
 date-released: "2026-10-23"
 keywords:
   - option pricing
