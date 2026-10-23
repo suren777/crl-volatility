@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "crl-volatility: code for \"A correlated random-level volatility model: exact one-dimensional pricing with skew\""
+type: software
+authors:
+  - family-names: Islyaev
+    given-names: Suren
+    affiliation: Independent researcher
+license: MIT
+repository-code: "https://github.com/suren777/crl-volatility"
+version: 1.0.0
+date-released: "2026-10-23"
+keywords:
+  - option pricing
+  - implied volatility
+  - volatility skew
+references:
+  - type: article
+    authors:
+      - family-names: Date
+        given-names: Paresh
+      - family-names: Islyaev
+        given-names: Suren
+    title: "A fast calibrating volatility model for option pricing"
+    journal: "European Journal of Operational Research"
+    volume: 243
+    issue: 2
+    start: 599
+    end: 606
+    year: 2015
+    doi: 10.1016/j.ejor.2014.12.031

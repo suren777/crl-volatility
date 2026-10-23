@@ -1,0 +1,11 @@
+{
+  "title": "crl-volatility: code for \"A correlated random-level volatility model: exact one-dimensional pricing with skew\"",
+  "upload_type": "software",
+  "description": "Pricers, derivation checks, S&P 500 experiments and the replication of Date and Islyaev (2015) accompanying the preprint \"A correlated random-level volatility model: exact one-dimensional pricing with skew\". No market data is included.",
+  "creators": [{"name": "Islyaev, Suren", "affiliation": "Independent researcher"}],
+  "license": "MIT",
+  "keywords": ["option pricing", "implied volatility", "volatility skew", "lognormal mixture", "Gauss-Hermite quadrature"],
+  "related_identifiers": [
+    {"identifier": "10.1016/j.ejor.2014.12.031", "relation": "references", "scheme": "doi"}
+  ]
+}
