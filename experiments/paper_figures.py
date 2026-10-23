@@ -177,7 +177,7 @@ def fig_spx_skew_term() -> None:
         a * np.geomspace(taus.min(), taus.max(), 100) ** alpha,
         ls="-",
         color="0.5",
-        label=f"market power law ($\\alpha$={alpha:.2f})",
+        label=f"market power law ($\\alpha={alpha:.2f}$)",
     )
     ax.loglog(
         taus,
@@ -193,7 +193,7 @@ def fig_spx_skew_term() -> None:
     ax.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_yticks([30, 50, 100, 200])
     ax.set_xlabel(r"$\tau$ (years)")
-    ax.set_ylabel(r"$|\,\mathrm{ATM\ skew}\,|$ (vol points per unit $\ln K$)")
+    ax.set_ylabel(r"$|\partial\sigma_{\mathrm{imp}}/\partial x|$ at the money (vol points)")
     ax.legend(frameon=False, fontsize=8, loc="lower left")
     fig.tight_layout()
     fig.savefig(FIGDIR / "spx_skew_term.pdf")
