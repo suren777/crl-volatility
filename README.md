@@ -38,7 +38,11 @@ Use of market data is subject to the provider's terms.
 
 ## Citation
 
-Archived on Zenodo: [doi:10.5281/zenodo.23600840](https://doi.org/10.5281/zenodo.23600840)
+Paper: Islyaev, S., *A Correlated Random-level Volatility Model: Exact One-dimensional Pricing
+with Skew* (October 23, 2026). SSRN: [abstract 7664360](https://ssrn.com/abstract=7664360),
+[doi:10.2139/ssrn.7664360](https://doi.org/10.2139/ssrn.7664360).
+
+Code archived on Zenodo: [doi:10.5281/zenodo.23600840](https://doi.org/10.5281/zenodo.23600840)
 (all versions; v1.0.0 is [10.5281/zenodo.23600841](https://doi.org/10.5281/zenodo.23600841)).
 See `CITATION.cff` for the citation entry.
 

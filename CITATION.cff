@@ -15,6 +15,17 @@ keywords:
   - option pricing
   - implied volatility
   - volatility skew
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Islyaev
+      given-names: Suren
+  title: "A Correlated Random-level Volatility Model: Exact One-dimensional Pricing with Skew"
+  journal: "SSRN Electronic Journal"
+  year: 2026
+  month: 10
+  doi: 10.2139/ssrn.7664360
+  url: "https://ssrn.com/abstract=7664360"
 references:
   - type: article
     authors:
