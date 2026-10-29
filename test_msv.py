@@ -324,6 +324,17 @@ def test_crl_call_pairing_semantics() -> None:
     print("ok  crl_call pairing: elementwise (scalars broadcast), mismatched lengths raise")
 
 
+def test_crl_call_default_nodes() -> None:
+    """n_nodes=None: 64 nodes for rho >= -0.9, 256 below (slow convergence as rho -> -1)."""
+    ks = np.array([80.0, 100.0, 120.0])
+    F, D, t = 100.0, 1.0, 0.1
+    for rho, n in ((-0.5, 64), (-0.9, 64), (-0.95, 256), (-0.99, 256)):
+        auto = msv.crl_call(F, ks, D, t, a0, a1, a2, lam, k, rho)
+        fixed = msv.crl_call(F, ks, D, t, a0, a1, a2, lam, k, rho, n_nodes=n)
+        assert np.array_equal(auto, fixed), (rho, auto, fixed)
+    print("ok  crl_call default nodes: 64 for rho >= -0.9, 256 below")
+
+
 def test_greeks_and_exotics() -> None:
     """Greeks are finite/sane; barrier < European; Asian runs and prices > 0."""
     delta, gamma = msv.greeks(S, 100.0, r, tau, theta)

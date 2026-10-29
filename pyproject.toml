@@ -5,6 +5,7 @@ description = "Correlated random-level (CRL) volatility model and the MSV model 
 requires-python = ">=3.14"
 dependencies = [
     "numpy",
+    "python-flint>=0.9.0",
     "scipy",
 ]
 

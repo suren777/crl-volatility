@@ -239,7 +239,7 @@ def crl_call(
     lam: float,
     k: float,
     rho: float,
-    n_nodes: int = 64,
+    n_nodes: int | None = None,
 ) -> FloatArray:
     """Correlated random-level call: D * E_Z[Black(F M(Z)/m, K, tau, (1-rho^2) zeta(Z) Q(tau))].
 
@@ -253,7 +253,12 @@ def crl_call(
     crossed into a K x tau grid: call once per tau to price a surface.
     Reliable for rho <= 0. For rho > 0 and large k the integrand peaks far in the
     Z tail (high level paired with high return) and Gauss-Hermite does not converge.
+    n_nodes=None uses 64 nodes, or 256 for rho < -0.9: as rho -> -1 the conditional
+    variance (1 - rho^2) V tau vanishes, the integrand develops a kink and convergence
+    slows (64 nodes err 0.28 vol pts at rho = -0.99, 256 nodes 0.005).
     """
+    if n_nodes is None:
+        n_nodes = 256 if rho < -0.9 else 64
     if not -1.0 < rho < 1.0:
         raise ValueError("rho must be in (-1, 1)")
     if k <= 0:
