@@ -1,6 +1,6 @@
 """Day-to-day stability panel of the fitted models across SPX trade dates.
 
-Usage: uv run python experiments/panel.py
+Usage: uv run python experiments/panel.py [--dates D1,D2,...]
 
 For every trade date present in the Cboe SQLite snapshots table, builds the six
 SPX monthly expiries in [3 weeks, 12 months] and fits plain MSV, CRL (rho <= 0),
@@ -15,6 +15,7 @@ experiments/results/panel.csv (one row per trade_date x model) and summarises
 in experiments/results/panel.md. New dates extend the CSV automatically.
 """
 
+import argparse
 import csv
 import sqlite3
 import sys
@@ -66,6 +67,8 @@ def load_raw(db: str, trade_date: str) -> tuple[list[dict[str, str]], float]:
         )
         raw = []
         for expiry, cp, strike, bid, ask in rows:
+            if bid is None or ask is None:
+                continue
             bid, ask = float(bid), float(ask)
             if bid <= 0 or ask <= bid:
                 continue
@@ -271,6 +274,9 @@ def make_row(
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dates", help="comma-separated trade dates (default: all in the DB)")
+    args = parser.parse_args()
     con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
     try:
         dates = [
@@ -278,6 +284,8 @@ def main() -> None:
         ]
     finally:
         con.close()
+    if args.dates:
+        dates = [d for d in dates if d in args.dates.split(",")]
     RESULTS.mkdir(exist_ok=True)
 
     rows: list[PanelRow] = []

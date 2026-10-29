@@ -97,3 +97,43 @@ def test_grid_matches_quad() -> None:
         for i, kk in enumerate(K):
             pq = heston.heston_call(F, float(kk), tau, v0, kappa, theta, sigma, rho)
             assert abs(pq - pg[i]) < 1e-6 * max(pq, 1.0), (tau, kk, pq, pg[i])
+
+
+# Fitted 2020-03-31 and 2020-02-28 parameters (v0, kappa, theta, sigma, rho): large vol-of-vol,
+# where the original Heston (1993) form of the CF crosses the branch cut of the complex log.
+STRESSED = (
+    (0.2411731, 1.5822198, 0.1519294, 1.9864009, -0.8516627),
+    (0.2772739, 8.6469402, 0.0222408, 3.5189039, -0.6738301),
+)
+
+
+def test_monte_carlo_stressed() -> None:
+    """Quad pricer within 3 SE of full-truncation Euler MC at large vol-of-vol, one year out."""
+    K = np.array([80.0, 100.0, 120.0])
+    px, se = _mc_call(0.79, *STRESSED[0], K, 400_000, 400, 7)
+    for i, kk in enumerate(K):
+        ref = heston.heston_call(F, float(kk), 0.79, *STRESSED[0])
+        assert abs(px[i] - ref) < 3.0 * se[i], (kk, px[i], ref, se[i])
+
+
+def test_cf_continuous_stressed() -> None:
+    """No jumps in the CF along the integration path (the branch-cut failure mode)."""
+    u = np.asarray(np.linspace(0.0, heston.UMAX, 20_001) - 0.5j, dtype=np.complex128)
+    for p in STRESSED:
+        for tau in (0.1, 0.9, 2.0):
+            phi = np.asarray(heston.heston_cf(u, tau, *p))
+            assert np.all(np.isfinite(phi))
+            step = np.abs(np.diff(phi))
+            assert step.max() < 0.05 * np.abs(phi[:-1]).max() + 1e-3, (p, tau, step.max())
+
+
+def test_prices_within_bounds_stressed() -> None:
+    """Calls lie in [max(F - K, 0), F] and the grid matches quad at large vol-of-vol."""
+    K = F * np.array([0.6, 0.8, 1.0, 1.2, 1.5])
+    for p in STRESSED:
+        for tau in (0.1, 0.9, 2.0):
+            pg = heston.heston_call_vec(F, K, tau, *p)
+            assert np.all(pg >= np.maximum(F - K, 0.0) - 1e-8) and np.all(pg <= F), (p, tau, pg)
+            for i, kk in enumerate(K):
+                pq = heston.heston_call(F, float(kk), tau, *p)
+                assert abs(pq - pg[i]) < 1e-6 * max(pq, 1.0), (p, tau, kk, pq, pg[i])

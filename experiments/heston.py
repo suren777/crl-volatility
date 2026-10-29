@@ -40,11 +40,11 @@ def heston_cf(
     b = kappa
     d = np.sqrt((rho * sigma * 1j * z - b) ** 2 + sigma**2 * (z * z + 1j * z))
     e = b - rho * sigma * 1j * z
-    g = (e + d) / (e - d)
-    c = (e + d) / sigma**2 * (1.0 - np.exp(d * tau)) / (1.0 - g * np.exp(d * tau))
+    g = (e - d) / (e + d)
+    ed = np.exp(-d * tau)
+    c = (e - d) / sigma**2 * (1.0 - ed) / (1.0 - g * ed)
     return np.exp(
-        c * v0
-        + (a / sigma**2) * ((e + d) * tau - 2.0 * np.log((1.0 - g * np.exp(d * tau)) / (1.0 - g)))
+        c * v0 + (a / sigma**2) * ((e - d) * tau - 2.0 * np.log((1.0 - g * ed) / (1.0 - g)))
     )
 
 
