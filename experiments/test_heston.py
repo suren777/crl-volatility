@@ -10,6 +10,7 @@ import heston  # noqa: E402
 import numpy as np  # noqa: E402
 import shifted_spx  # noqa: E402
 from numpy.typing import NDArray  # noqa: E402
+from scipy.integrate import quad  # noqa: E402
 
 F: float = 100.0
 
@@ -137,3 +138,36 @@ def test_prices_within_bounds_stressed() -> None:
             for i, kk in enumerate(K):
                 pq = heston.heston_call(F, float(kk), tau, *p)
                 assert abs(pq - pg[i]) < 1e-6 * max(pq, 1.0), (p, tau, kk, pq, pg[i])
+
+
+# Fitted 2017-06-30 parameters: low v0, so at three weeks |phi(u - i/2)| is still 0.2 at u = 200
+# and a cutoff there leaves a strike-oscillating error (negative OTM call prices).
+LOW_VAR = (0.0063683, 5.4475942, 0.0307617, 1.2603156, -0.7576482)
+
+
+def _call_long(kk: float, tau: float, p: tuple[float, ...]) -> float:
+    k = float(np.log(F / kk))
+
+    def integrand(u: float) -> float:
+        phi = heston.heston_cf(u - 0.5j, tau, *p)
+        return float(np.real(np.exp(1j * u * k) * phi)) / (u * u + 0.25)
+
+    edges = np.arange(0.0, 10_001.0, 50.0)
+    val = sum(
+        quad(integrand, a, b, limit=200, epsabs=1e-15)[0]
+        for a, b in zip(edges[:-1], edges[1:], strict=True)
+    )
+    return float(F - np.sqrt(F * kk) / np.pi * val)
+
+
+def test_low_variance_short_expiry() -> None:
+    """Both pricers integrate until the CF has decayed: positive, decreasing, and equal to a
+    cutoff-10k reference."""
+    tau = 21 / 365
+    K = F * np.array([0.95, 1.0, 1.03, 1.05, 1.07, 1.1])
+    pg = heston.heston_call_vec(F, K, tau, *LOW_VAR)
+    assert np.all(pg > 0.0) and np.all(np.diff(pg) < 0.0), pg
+    for i, kk in enumerate(K):
+        ref = _call_long(float(kk), tau, LOW_VAR)
+        pq = heston.heston_call(F, float(kk), tau, *LOW_VAR)
+        assert abs(pg[i] - ref) < 1e-9 * F and abs(pq - ref) < 1e-9 * F, (kk, pg[i], pq, ref)

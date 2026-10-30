@@ -10,7 +10,10 @@ switching. The undiscounted (forward) call price is the Lewis single integral
   C = F - sqrt(F K)/pi * int_0^U Re[ e^{i u k} phi(u - i/2) ] du / (u^2 + 1/4),
 computed either by adaptive scipy quad (`heston_call`, the reference pricer) or
 on a fixed Gauss-Legendre grid (`heston_call_vec`, same integral, fast enough
-to calibrate on ~1.5k quotes; agreement is tested in test_heston.py).
+to calibrate on ~1.5k quotes; agreement is tested in test_heston.py). The cutoff U is
+UMAX unless |phi(u - i/2)| is still above CF_TOL there (low v0 at short tau), in which case
+it is the first point of a geometric grid where it is below; beyond UMAX the grid pricer
+adds composite Gauss-Legendre panels of width PANEL.
 """
 
 import sys
@@ -22,12 +25,16 @@ import numpy as np  # noqa: E402
 from numpy.typing import NDArray  # noqa: E402
 from scipy.integrate import quad  # noqa: E402
 
-UMAX = 200.0  # integral cutoff: integrand ~ e^{-c u} there for all fitted params
+UMAX = 200.0
 NNODES = 400
+CF_TOL = 1e-8
+U_CAP = 1e5
+PANEL = 8.0
 
 _NODES, _WEIGHTS = np.polynomial.legendre.leggauss(NNODES)
 U_GRID: NDArray[np.float64] = 0.5 * UMAX * (_NODES + 1.0)
 _WQ: NDArray[np.float64] = 0.5 * UMAX * _WEIGHTS / (U_GRID**2 + 0.25)
+_PX, _PW = np.polynomial.legendre.leggauss(12)
 
 ComplexArg = complex | NDArray[np.complex128]
 
@@ -48,6 +55,16 @@ def heston_cf(
     )
 
 
+def cutoff(tau: float, v0: float, kappa: float, theta: float, sigma: float, rho: float) -> float:
+    """UMAX, or the first u of a geometric grid above it where |phi(u - i/2)| < CF_TOL."""
+    u = np.geomspace(UMAX, U_CAP, 200)
+    small = np.abs(
+        heston_cf(np.asarray(u - 0.5j, np.complex128), tau, v0, kappa, theta, sigma, rho)
+    )
+    small_idx = np.flatnonzero(small < CF_TOL)
+    return float(u[small_idx[0]]) if small_idx.size else U_CAP
+
+
 def heston_call(
     F: float, K: float, tau: float, v0: float, kappa: float, theta: float, sigma: float, rho: float
 ) -> float:
@@ -58,7 +75,12 @@ def heston_call(
         phi = heston_cf(u - 0.5j, tau, v0, kappa, theta, sigma, rho)
         return float(np.real(np.exp(1j * u * k) * phi)) / (u * u + 0.25)
 
-    val, _ = quad(integrand, 0.0, UMAX, limit=200, epsabs=1e-12, epsrel=1e-10)
+    umax = cutoff(tau, v0, kappa, theta, sigma, rho)
+    edges = np.append(np.arange(0.0, umax, UMAX), umax)
+    val = sum(
+        quad(integrand, a, b, limit=200, epsabs=1e-12, epsrel=1e-10)[0]
+        for a, b in zip(edges[:-1], edges[1:], strict=True)
+    )
     return float(F - np.sqrt(F * K) / np.pi * float(val))
 
 
@@ -74,10 +96,17 @@ def heston_call_vec(
 ) -> NDArray[np.float64]:
     """heston_call on a strike array: one CF evaluation per expiry, then matmuls."""
     k = np.log(F / K)[:, None]
-    z = np.asarray(U_GRID - 0.5j, dtype=np.complex128)
+    umax = cutoff(tau, v0, kappa, theta, sigma, rho)
+    u, wq = U_GRID, _WQ
+    if umax > UMAX:
+        left = np.arange(UMAX, umax, PANEL)
+        tail = (left[:, None] + 0.5 * PANEL * (_PX + 1.0)).ravel()
+        u = np.concatenate([U_GRID, tail])
+        wq = np.concatenate([_WQ, np.tile(0.5 * PANEL * _PW, left.size) / (tail**2 + 0.25)])
+    z = np.asarray(u - 0.5j, dtype=np.complex128)
     phi = heston_cf(z, tau, v0, kappa, theta, sigma, rho)
     re = np.asarray(np.real(phi), dtype=np.float64)
     im = np.asarray(np.imag(phi), dtype=np.float64)
-    integ = np.cos(k * U_GRID) @ (re * _WQ) - np.sin(k * U_GRID) @ (im * _WQ)
+    integ = np.cos(k * u) @ (re * wq) - np.sin(k * u) @ (im * wq)
     px = np.asarray(F - np.sqrt(F * K) / np.pi * integ, dtype=np.float64)
     return np.asarray(px, dtype=np.float64)

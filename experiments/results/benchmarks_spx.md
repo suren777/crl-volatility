@@ -30,27 +30,27 @@ Per-expiry forward/discount and OTM fit set:
 Fitted parameters (joint, six expiries) and fit time:
 
 - plain MSV: `a0=0.00000 a1=6.66572 a2=0.01638 lam=0.0041 k=0.2862`,
-  cost `1.2908` [16.8s]
+  cost `1.2908` [16.4s]
 - CRL: `a0=0.02125 a1=0.20668 a2=0.00000 lam=0.1975 k=2.2833 rho=-0.491`
-  (`rho<=0`), cost `0.0198` [27.3s]
-- SSVI: `eta=0.7807 gamma=0.5992 rho=-0.584`, cost `0.0340` [9.9s]
+  (`rho<=0`), cost `0.0198` [23.8s]
+- SSVI: `eta=0.7807 gamma=0.5992 rho=-0.584`, cost `0.0340` [6.4s]
   - per-expiry `theta` (ATM total variance): `0.00158 0.00316 0.00471
    0.00919 0.01624 0.02437`
-- Heston: `v0=0.02061 kappa=15.4838 theta=0.03860 sigma=3.1942 rho=-0.696`,
-  cost `0.0288` [6.6s]
+- Heston: `v0=0.02062 kappa=15.4788 theta=0.03860 sigma=3.1926 rho=-0.696`,
+  cost `0.0288` [13.8s]
   - Feller `2*kappa*theta/sigma^2 = 0.117` (VIOLATED)
 
 IV RMSE (vol points):
 
 | expiry      | n   | MSV   | CRL   | SSVI | Heston |
 |-------------|-----|-------|-------|------|--------|
-| 2026-11-20 | 379 | 10.167 | 0.747 | 1.150 | 0.918 |
-| 2026-12-18 | 359 | 7.665  | 0.493 | 0.679 | 0.554 |
-| 2027-01-15 | 328 | 6.324  | 0.427 | 0.533 | 0.502 |
-| 2027-03-19 | 131 | 6.562  | 0.390 | 0.372 | 0.325 |
-| 2027-06-17 | 133 | 5.173  | 0.413 | 0.226 | 0.414 |
-| 2027-09-17 | 122 | 4.381  | 0.378 | 0.157 | 0.651 |
-| overall    | 1452 | 7.648 | 0.537 | 0.737 | 0.643 |
+| 2026-11-20 | 379 | 10.167 | 0.747 | 1.150 | 0.919 |
+| 2026-12-18 | 359 | 7.665 | 0.493 | 0.679 | 0.554 |
+| 2027-01-15 | 328 | 6.324 | 0.427 | 0.533 | 0.502 |
+| 2027-03-19 | 131 | 6.562 | 0.390 | 0.372 | 0.325 |
+| 2027-06-17 | 133 | 5.173 | 0.413 | 0.226 | 0.414 |
+| 2027-09-17 | 122 | 4.381 | 0.378 | 0.157 | 0.651 |
+| overall | 1452 | 7.648 | 0.537 | 0.737 | 0.643 |
 
 ATM skew ratio (model/market), `|ln(K/F)| <= 0.05`:
 
@@ -79,27 +79,27 @@ Per-expiry forward/discount and OTM fit set:
 Fitted parameters (joint, six expiries) and fit time:
 
 - plain MSV: `a0=0.00000 a1=0.14763 a2=0.01560 lam=0.2252 k=0.3603`,
-  cost `1.2585` [2.7s]
+  cost `1.2585` [1.9s]
 - CRL: `a0=0.00000 a1=0.09208 a2=0.01963 lam=0.5168 k=2.2600 rho=-0.487`
-  (`rho<=0`), cost `0.0200` [14.6s]
-- SSVI: `eta=0.8016 gamma=0.5937 rho=-0.579`, cost `0.0354` [6.0s]
+  (`rho<=0`), cost `0.0200` [11.0s]
+- SSVI: `eta=0.8016 gamma=0.5937 rho=-0.579`, cost `0.0354` [5.6s]
   - per-expiry `theta` (ATM total variance): `0.00150 0.00306 0.00462
    0.00906 0.01606 0.02415`
-- Heston: `v0=0.01779 kappa=14.7289 theta=0.03871 sigma=3.0697 rho=-0.690`,
-  cost `0.0296` [6.2s]
+- Heston: `v0=0.01780 kappa=14.7219 theta=0.03871 sigma=3.0682 rho=-0.690`,
+  cost `0.0296` [14.4s]
   - Feller `2*kappa*theta/sigma^2 = 0.121` (VIOLATED)
 
 IV RMSE (vol points):
 
 | expiry      | n   | MSV   | CRL   | SSVI | Heston |
 |-------------|-----|-------|-------|------|--------|
-| 2026-11-20 | 377 | 9.714  | 0.768 | 1.192 | 0.956 |
-| 2026-12-18 | 363 | 7.367  | 0.505 | 0.699 | 0.572 |
-| 2027-01-15 | 334 | 6.129  | 0.401 | 0.523 | 0.470 |
-| 2027-03-19 | 130 | 6.391  | 0.378 | 0.382 | 0.333 |
-| 2027-06-17 | 132 | 4.993  | 0.398 | 0.231 | 0.395 |
-| 2027-09-17 | 122 | 4.334  | 0.365 | 0.162 | 0.637 |
-| overall    | 1458 | 7.348 | 0.540 | 0.756 | 0.653 |
+| 2026-11-20 | 377 | 9.714 | 0.768 | 1.192 | 0.957 |
+| 2026-12-18 | 363 | 7.367 | 0.505 | 0.699 | 0.572 |
+| 2027-01-15 | 334 | 6.129 | 0.401 | 0.523 | 0.470 |
+| 2027-03-19 | 130 | 6.391 | 0.378 | 0.382 | 0.333 |
+| 2027-06-17 | 132 | 4.993 | 0.398 | 0.231 | 0.395 |
+| 2027-09-17 | 122 | 4.334 | 0.365 | 0.162 | 0.637 |
+| overall | 1458 | 7.348 | 0.540 | 0.756 | 0.653 |
 
 ATM skew ratio (model/market), `|ln(K/F)| <= 0.05`:
 
@@ -117,6 +117,10 @@ ATM skew ratio (model/market), `|ln(K/F)| <= 0.05`:
 Corrected 2026-10-29: the Heston rows were refitted after the `heston_cf` branch-cut fix
 (commit 09d1e47); the earlier Heston numbers in this note came from a characteristic function
 that crossed the branch cut of the complex log at this surface's vol-of-vol (sigma ~ 3).
+Refitted again 2026-10-30 after the integration-cutoff fix (`heston.cutoff`; the fixed
+cutoff u = 200 stopped short of where the CF had decayed at the short expiries): Heston RMSEs
+move by at most 0.001; fit times are from one run of `benchmarks_spx.py` on an idle machine, and
+the longer integration makes Heston slower than before (13.8 s and 14.4 s).
 
 On a single trading day (2026-10-16) across six monthly expiries, CRL has the lowest overall
 vega-weighted IV RMSE (0.54, against 0.64–0.65 for Heston, 0.74–0.76 for SSVI and 7.3–7.6 for
